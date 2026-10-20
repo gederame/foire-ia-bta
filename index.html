@@ -220,6 +220,35 @@ h2 { margin: 0; font-weight: 400; font-size: clamp(28px, 3.4vw, 40px); line-heig
     align-content: start;
   }
   .ex strong { font-size: 17px; }
+
+  /* Comparatif en cartes : un critère par carte */
+  .compare {
+    display: flex;
+    gap: 12px;
+    margin-top: 10px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    overscroll-behavior-x: contain;
+    margin-left: calc(-1 * max(16px, env(safe-area-inset-left, 0px)));
+    margin-right: calc(-1 * max(16px, env(safe-area-inset-right, 0px)));
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    scroll-padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-bottom: 6px;
+    scrollbar-width: none;
+  }
+  .compare::-webkit-scrollbar { display: none; }
+  .compare .c-row {
+    flex: 0 0 80%;
+    scroll-snap-align: start;
+    border: 1px solid #262a3a;
+    border-radius: 10px;
+    background: #0d0f18;
+    padding: 18px 16px;
+    gap: 14px;
+    align-content: start;
+  }
+  .compare .c-head { display: none; }
   .formats { gap: 44px; }
   .formats article + article { padding-top: 20px; }
 }
@@ -252,6 +281,7 @@ h2 { margin: 0; font-weight: 400; font-size: clamp(28px, 3.4vw, 40px); line-heig
     <div>
       <h2>Ce que les autres événements IA ne font pas</h2>
       <p class="lead">Nous avons recensé les événements IA prévus en Suisse d'octobre 2026 à juin 2027. Le grand public jeune et francophone, qui veut pratiquer plutôt qu'écouter, n'a presque rien.</p>
+      <p class="swipe" aria-hidden="true"><b>Aujourd'hui vs chez nous</b> · glissez <span class="arrow">→</span></p>
       <div class="compare" role="table" aria-label="L'offre actuelle comparée à La Foire aux IA">
         <div class="c-row c-head" role="row">
           <span role="columnheader"></span>
@@ -279,6 +309,7 @@ h2 { margin: 0; font-weight: 400; font-size: clamp(28px, 3.4vw, 40px); line-heig
           <span class="c-us" role="cell"><i>Chez nous</i>On pratique et on repart avec une création</span>
         </div>
       </div>
+      <div class="dots" aria-hidden="true"></div>
     </div>
   </section>
 
@@ -356,11 +387,11 @@ h2 { margin: 0; font-weight: 400; font-size: clamp(28px, 3.4vw, 40px); line-heig
       </div>
       <script>
         (function () {
-          var lists = document.querySelectorAll('.ex');
+          var lists = document.querySelectorAll('.ex, .compare');
           Array.prototype.forEach.call(lists, function (list) {
             var dots = list.nextElementSibling;
             if (!dots || !dots.classList.contains('dots')) return;
-            var items = list.children;
+            var items = Array.prototype.filter.call(list.children, function (el) { return !el.classList.contains('c-head'); });
             for (var i = 0; i < items.length; i++) dots.appendChild(document.createElement('span'));
             function update() {
               var step = items[0] ? items[0].getBoundingClientRect().width + 12 : 1;
